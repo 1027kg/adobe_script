@@ -1,10 +1,4 @@
-﻿#target "indesign"
-
-FAST = 1;
-
-/*------------------------------------------------------
-    main
--------------------------------------------------------*/
+﻿FAST = 1;
 
 var tmpLayer;
 var nowLayer;
@@ -17,52 +11,56 @@ if (FAST) {
 
 function main() {
 
+  var imgCnt = 0;
+  var nowLayer = app.activeDocument.activeLayer;
+  pp = app.activeDocument.pages;
+
   try{
-    app.activeDocument.colors.add ({name:"imgLabel",colorValue:[0,100,50,0]});
-    app.activeDocument.colors.add ({name:"imgLabelText",colorValue:[0,0,0,0]});
+    addSwatch("imgPath",0,100,50,0);
+    addSwatch("imgPathTxt",0,0,0,0);
   }catch(e){
 
   }
 
-  nowLayer = app.activeDocument.activeLayer;
   tmpLayer = app.activeDocument.layers.add();
-  tmpLayer.name = "filePath_000";
+  tmpLayer.name = "labeler_" + zeroPadding( Math.floor(Math.random()*30), 2 );
 
-  var pages = app.activeDocument.pages;
+  var imgCnt = 0;
+  var graphArry = [];
+  for(var k=0; k < pp.length; k++){
 
-  for(var i=0; i < pages.length; i++)
-  {
+    grS = pp[k].allGraphics;
 
-    var thisPage = pages[i];
-    var thisGraphics = thisPage.allGraphics;
+    for(var l=0; l < grS.length; l++){
 
-    for(var j=0; j < thisGraphics.length; j++)
-    {
+      if( !grS[l].itemLayer ) continue;
+      if( grS[l].itemLayer.name != nowLayer.name ) continue;
 
-      if( thisGraphics[j].itemLayer.name != nowLayer.name ) continue;
+      linkName = grS[l].itemLink.name;
+      if( /.psd/.test(linkName) == false ) continue;
 
-      linkName = thisGraphics[j].itemLink.name;
-      if( linkName.indexOf(".psd") == -1 ) continue;
+      vPos = grS[l].visibleBounds;
+      nowPage = grS[l].parentPage;
 
-      getPos = thisGraphics[j].visibleBounds;
-
-      var filepathFrm = thisPage.textFrames.add({
-        geometricBounds: [ getPos[0], getPos[1], getPos[0]+24, getPos[1]+90 ],
+      var pathFrm = pp[k].textFrames.add({
+        geometricBounds: [ vPos[0], vPos[1], vPos[0]+24, vPos[1]+90 ],
         contents: linkName,
         itemLayer: tmpLayer
       });
 
-      filepathFrm.paragraphs[0].appliedFont = app.fonts.item("小塚ゴシック Pro\tB");
-      filepathFrm.paragraphs[0].pointSize = "9Q";
-      filepathFrm.paragraphs[0].fillColor = "imgLabelText";
-      filepathFrm.fillColor = "imgLabel";
-      filepathFrm.textFramePreferences.insetSpacing = [ 1, 1, 1, 1 ];
-      filepathFrm.fit(FitOptions.FRAME_TO_CONTENT );
+      pathFrm.paragraphs[0].appliedFont = app.fonts.item("小塚ゴシック Pro\tB");
+      pathFrm.paragraphs[0].pointSize = "9Q";
+      pathFrm.paragraphs[0].fillColor = "imgPathTxt";
+      pathFrm.fillColor = "imgPath";
+      pathFrm.textFramePreferences.insetSpacing = [1,1,1,1];
+      pathFrm.fit(FitOptions.FRAME_TO_CONTENT );
+      pathFrm.transparencySettings.blendingSettings.opacity = 65;
 
     }
-
   }
 
-  alert("done");
+}
 
+function zeroPadding(num, len) {
+  return ('0000000000' + num).slice(-len);
 }
