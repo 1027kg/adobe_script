@@ -7,7 +7,7 @@ function main() {
 
   var imgCnt = 0;
   var nowLayer = app.activeDocument.activeLayer;
-  pp = app.activeDocument.pages;
+  myPage = app.activeDocument.pages;
 
   try{
     addSwatch("imgPath",0,100,50,0);
@@ -21,9 +21,9 @@ function main() {
 
   var imgCnt = 0;
   var graphArry = [];
-  for(var k=0; k < pp.length; k++){
+  for(var k=0; k < myPage.length; k++){
 
-    grS = pp[k].allGraphics;
+    grS = myPage[k].allGraphics;
 
     for(var l=0; l < grS.length; l++){
 
@@ -35,7 +35,7 @@ function main() {
 
       vPos = grS[l].visibleBounds;
 
-      var pathFrm = pp[k].textFrames.add({
+      var pathFrm = myPage[k].textFrames.add({
         geometricBounds: [ vPos[0], vPos[1], vPos[0]+24, vPos[1]+90 ],
         contents: linkName,
         itemLayer: tmpLayer
