@@ -1,13 +1,7 @@
-﻿FAST = 1;
-
-var tmpLayer;
+﻿var tmpLayer;
 var nowLayer;
 
-if (FAST) {
-  app.doScript(main, ScriptLanguage.JAVASCRIPT, [], UndoModes.FAST_ENTIRE_SCRIPT);
-} else {
-  main();
-}
+app.doScript(main, ScriptLanguage.JAVASCRIPT, [], UndoModes.FAST_ENTIRE_SCRIPT);
 
 function main() {
 
@@ -40,7 +34,6 @@ function main() {
       if( /.psd/.test(linkName) == false ) continue;
 
       vPos = grS[l].visibleBounds;
-      nowPage = grS[l].parentPage;
 
       var pathFrm = pp[k].textFrames.add({
         geometricBounds: [ vPos[0], vPos[1], vPos[0]+24, vPos[1]+90 ],
